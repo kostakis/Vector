@@ -85,6 +85,10 @@ inline bool Vector<T>::isEmpty() const
 	}
 }
 
+/*
+Insert an element and the end of the vector
+If capacity is not  enough we allocate x2 the previous capicity
+*/
 template<class T>
 void Vector<T>::push_back(const T & elem)
 {
@@ -116,13 +120,19 @@ void Vector<T>::push_back(const T & elem)
 	__size++;
 }
 
+/*
+Deletes an element from the vector and rezises it
+No Bounds checking
+*/
 template<class T>
 void Vector<T>::deletePos(unsigned pos)
 {
+	/*
 	if (pos<0 || pos>=__size) {
 		std::cerr << "Wrong position exiting" << std::endl;
 		exit(-1);
 	}
+	*/
 
 	for (unsigned i = pos; i < __size; i++) {
 		__elem[i] = __elem[i + 1];
@@ -131,14 +141,19 @@ void Vector<T>::deletePos(unsigned pos)
 }
 
 
-
+/*
+Return value of then index given
+No Bounds checking
+*/
 template<class T>
 inline T & Vector<T>::operator[](unsigned pos) const
 {
+	/*
 	if (pos<0 || pos>=__capacity) {
 		cerr << "Wrong position exiting" << endl;
 		exit(-1);
 	}
+	*/
 	return __elem[pos];
 }
 
