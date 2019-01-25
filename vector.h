@@ -4,6 +4,7 @@
 
 #include<iostream>
 #include <initializer_list>
+#include <exception>
 
 using std::cout;
 using std::cerr;
@@ -19,32 +20,32 @@ private:
 	unsigned __capacity;
 public:
 	/*Empty constructor*/
-	Vector():__elem(NULL),__size(0),__capacity(0){}
+	Vector() :__elem(NULL), __size(0), __capacity(0) {}
+
 	/*Constructor given the size*/
 	Vector(unsigned cap) {
 		if (cap < 0) {
-			cerr << "Cant initialize a vector with negative number" << endl;
-			exit(-1);
+			throw std::invalid_argument("Invalid argument");
 		}
-		
 		__elem = new T[cap];
 		__size = 0;
 		__capacity = cap;
 	}
-	~Vector(){
+	~Vector() {
 		delete[] __elem;
 	}
+
 	/*Copy constructor*/
 	Vector(const Vector & vec) {
-		cout << "Calling copy constructor" << endl;
-		__elem = new T[vec.getSize()];
+		__elem = new T[vec.size()];
 		__size = 0;
-		__capacity = vec.getSize();
-		for (unsigned i = 0; i < vec.getSize(); i++) {
+		__capacity = vec.size();
+		for (unsigned i = 0; i < vec.size(); i++) {
 			__elem[i] = vec[i];
 			__size++;
 		}
 	}
+
 	/*Initializer list constructor*/
 	Vector(std::initializer_list<T> list) {
 		__size = 0;
@@ -56,20 +57,24 @@ public:
 		}
 	}
 
-	
 
-	inline unsigned getSize() const;
+	/*Accessors*/
+	unsigned size() const;
 	bool isEmpty() const;
+	T& at(unsigned pos) const;//And Modifier
+
 
 	void push_back(const T & elem);
 	void deletePos(unsigned pos);
+	void clear();
 
+	/*Operators*/
 	T& operator [](unsigned pos) const;
 
 };
 
 template<class T>
-inline unsigned Vector<T>::getSize() const
+inline unsigned Vector<T>::size() const
 {
 	return __size;
 }
@@ -85,6 +90,17 @@ inline bool Vector<T>::isEmpty() const
 	}
 }
 
+template<class T>
+inline T & Vector<T>::at(unsigned pos) const
+{
+	if (pos >= __size || pos<0 ) {
+		throw std::out_of_range("Out of range exception");
+	}
+
+	return __elem[pos];
+}
+
+
 /*
 Insert an element and the end of the vector
 If capacity is not  enough we allocate x2 the previous capicity
@@ -93,7 +109,7 @@ template<class T>
 void Vector<T>::push_back(const T & elem)
 {
 	if (__size == 0 && __capacity == 0) {
-		__elem = new T[10];
+		__elem = new T[1];
 		__elem[__size] = elem;
 		__size++;
 		__capacity++;
@@ -110,7 +126,7 @@ void Vector<T>::push_back(const T & elem)
 		for (unsigned i = 0; i < __size; i++) {
 			__elem[i] = copy[i];
 		}
-		__elem[__size]=elem;
+		__elem[__size] = elem;
 		__size++;
 		delete[] copy;
 		return;
@@ -138,6 +154,17 @@ void Vector<T>::deletePos(unsigned pos)
 		__elem[i] = __elem[i + 1];
 	}
 	__size--;
+}
+
+
+
+template<class T>
+inline void Vector<T>::clear()
+{
+	for (unsigned int i = 0; i < __size; i++) {
+		__elem[i] = NULL;
+	}
+	__size = 0;
 }
 
 
